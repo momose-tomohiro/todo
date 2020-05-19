@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="UTF-8">
+        <title>todo</title>
+    </head>
+        <body>
+            <h1>todo</h1>
+            <div class="container">
+                <table id="todo_list">
+                   
+                </table>
+            </div>
+
+
+            <div class="container">
+                <form id="schedule_data" name = "schedule_data">
+                    <div class="">
+                        <input type="text" class="" name="schedule" placeholder="予定を入力してください">
+                    </div>
+                    <div class="radio">
+                        <label>優先度
+                            <input type="radio" name="priority" value="高">高
+                        </label>
+                        <label>
+                            <input type="radio" name="priority" value="中">中
+                        </label>
+                        <label>
+                            <input type="radio" name="priority" value="低">低
+                        </label>
+                    </div>
+                    <div class="time-limit">
+                        <input type="text" class="" placeholder="期限を入力してください" name="time_limit">
+                    </div>
+                </form>
+                <div>
+                    <button class="btn btn-primary" type="button" id="register">登録</button>
+                </div>
+            </div>
+            <script type="text/javascript" src="index.js"></script>
+        </body>
+</html>
