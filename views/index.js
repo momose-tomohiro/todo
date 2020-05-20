@@ -1,9 +1,17 @@
 
 const registerButton = document.getElementById(`register`);
 registerButton.onclick = function(){
-    const priorityValue = document.schedule_data.priority.value;
-    const scheduleName = document.schedule_data.schedule.value;
-    const timeLimitName = document.schedule_data.time_limit.value;
+    const form = {};
+    form.schedule = document.schedule_data.schedule.value;
+    form.priority = document.schedule_data.priority.value;
+    form.timeLimit = document.schedule_data.time_limit.value;
+    const JsonData = JSON.stringify(form)
+    fetch('/register',{
+        method:'post',
+        body:JsonData
+    })
+    .then()
+    /*
     const table = document.getElementById(`todo_list`);
     let row =  table.insertRow(-1);
     let cell = row.insertCell(-1);
@@ -23,6 +31,7 @@ registerButton.onclick = function(){
     
     cell.appendChild(button);
     button.addEventListener("click", removeSchedule, false);
+    */
     refreshIndex();
 }
 
