@@ -14,7 +14,7 @@
 
 
             <div class="container">
-                <form action="/register" method="post" id="schedule_data" name = "schedule_data">
+                <form action="/register" method="post" id="schedule_data" name = "schedule_data" onsubmit="register();return false;">
                     <div class="">
                         <input type="text" class="" name="schedule" placeholder="予定を入力してください">
                     </div>
@@ -32,10 +32,10 @@
                     <div class="time-limit">
                         <input type="text" class="" placeholder="期限を入力してください" name="time_limit">
                     </div>
-                    <div>
-                        <button class="btn btn-primary" type="submit" id="register">登録</button>
-                    </div>
                 </form>
+                <div>
+                    <button class="btn btn-primary" type="button" id="register">登録</button>
+                </div>
             </div>
             <script type="text/javascript" src="index.js"></script>
         </body>
