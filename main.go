@@ -11,14 +11,17 @@ import (
 	_ "github.com/go-sql-driver/mysql"
 )
 
-type todoList struct {
-	Schedule  string `json:"schedule"`
-	Priority  string `json:"priority"`
-	TimeLimit string `json:"timeLimit"`
+type todo struct {
+	ID        string `db:"id" json:"id"`
+	Schedule  string `db:"schedule" json:"schedule"`
+	Priority  string `db:"priority" json:"priority"`
+	TimeLimit string `db:"time_limit" json:"timeLimit"`
 }
 
+type todoList []todo
+
 func main() {
-	db, err := sql.Open("mysql", "root:tomoaki7@/todo")
+	db, err := sql.Open("mysql", "root:0111@/todo")
 	if err != nil {
 		fmt.Println(err.Error())
 		return
@@ -27,16 +30,17 @@ func main() {
 
 	http.Handle("/", http.FileServer(http.Dir("views")))
 	http.HandleFunc("/register", register)
+	http.HandleFunc("/display", display)
+	http.HandleFunc("/remove", remove)
 	log.Fatal(http.ListenAndServe(":8888", nil))
 }
 func register(w http.ResponseWriter, r *http.Request) {
-	var form todoList
+	form := todo{}
 
 	b, err := ioutil.ReadAll(r.Body)
 	if err != nil {
 		http.Error(w, err.Error(), 400)
 	}
-	fmt.Println(string(b))
 	json.Unmarshal(b, &form)
 	if err != nil {
 		http.Error(w, err.Error(), 400)
@@ -46,7 +50,7 @@ func register(w http.ResponseWriter, r *http.Request) {
 	priority := form.Priority
 	timeLimit := form.TimeLimit
 
-	db, err := sql.Open("mysql", "root:tomoaki7@/todo")
+	db, err := sql.Open("mysql", "root:0111@/todo")
 	if err != nil {
 		return
 	}
@@ -57,15 +61,68 @@ func register(w http.ResponseWriter, r *http.Request) {
 	}
 	defer stmt.Close()
 
-	result, err := stmt.Exec(schedule, priority, timeLimit)
+	_, err = stmt.Exec(schedule, priority, timeLimit)
+	if err != nil {
+		http.Error(w, err.Error(), 400)
+	}
+}
+func display(w http.ResponseWriter, r *http.Request) {
+	todoList := todoList{}
+
+	db, err := sql.Open("mysql", "root:0111@/todo")
+	if err != nil {
+		return
+	}
+	defer db.Close()
+
+	rows, err := db.Query("SELECT id, schedule, priority, time_limit FROM trn_todo")
 	if err != nil {
 		http.Error(w, err.Error(), 400)
 	}
 
-	id, err := result.LastInsertId()
+	for rows.Next() {
+		todo := todo{}
+		err := rows.Scan(&todo.ID, &todo.Schedule, &todo.Priority, &todo.TimeLimit)
+		if err != nil {
+			http.Error(w, err.Error(), 400)
+		}
+		todoList = append(todoList, todo)
+	}
+	defer rows.Close()
+
+	JSONTodoList, err := json.Marshal(todoList)
 	if err != nil {
 		http.Error(w, err.Error(), 400)
 	}
-	fmt.Println(id)
 
+	//json.NewEncoder(w).Encode(JSONTodoList)
+	w.Header().Set("Content-Type", "application/json")
+	w.Write(JSONTodoList)
+}
+func remove(w http.ResponseWriter, r *http.Request) {
+	form := todo{}
+	b, err := ioutil.ReadAll(r.Body)
+	if err != nil {
+		http.Error(w, err.Error(), 400)
+	}
+	json.Unmarshal(b, &form)
+	if err != nil {
+		http.Error(w, err.Error(), 400)
+	}
+	targetID := form.ID
+	log.Println(targetID)
+	db, err := sql.Open("mysql", "root:0111@/todo")
+	if err != nil {
+		return
+	}
+	defer db.Close()
+	stmt, err := db.Prepare("DELETE FROM trn_todo WHERE id = ?")
+	if err != nil {
+		http.Error(w, err.Error(), 400)
+	}
+	defer stmt.Close()
+	_, err = stmt.Exec(targetID)
+	if err != nil {
+		http.Error(w, err.Error(), 400)
+	}
 }
