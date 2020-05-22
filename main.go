@@ -3,6 +3,7 @@ package main
 import (
 	"database/sql"
 	"encoding/json"
+	"fmt"
 	"io/ioutil"
 	"log"
 	"net/http"
@@ -19,17 +20,23 @@ type todo struct {
 
 type todoList []todo
 
-var dbConn = connect()
+var dbConn *sql.DB
 
-func connect() *sql.DB {
+func connect() (db *sql.DB, err error) {
 	dbConn, err := sql.Open("mysql", "root:0111@/todo")
 	if err != nil {
 		log.Println(err)
 	}
-	return dbConn
+	return dbConn, err
 }
 
 func main() {
+	db, err := connect()
+	if err != nil {
+		fmt.Println(err.Error())
+		return
+	}
+	dbConn = db
 	http.Handle("/", http.FileServer(http.Dir("views")))
 	http.HandleFunc("/register", register)
 	http.HandleFunc("/display", display)
