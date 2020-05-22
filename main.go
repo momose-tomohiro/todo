@@ -29,10 +29,7 @@ func connect() *sql.DB {
 	return dbConn
 }
 
-//db, err = sql.Open("mysql", "root:0111@/todo")
-
 func main() {
-	// dbConn = connect()
 	http.Handle("/", http.FileServer(http.Dir("views")))
 	http.HandleFunc("/register", register)
 	http.HandleFunc("/display", display)
@@ -46,18 +43,6 @@ func register(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, err.Error(), 400)
 		return
 	}
-	/*
-		  b, err := ioutil.ReadAll(r.Body)
-		if err != nil {
-			http.Error(w, err.Error(), 400)
-			return
-		}
-		json.Unmarshal(b, &form)
-		if err != nil {
-			http.Error(w, err.Error(), 400)
-			return
-		}
-	*/
 
 	schedule := form.Schedule
 	priority := form.Priority
@@ -101,7 +86,6 @@ func display(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	//json.NewEncoder(w).Encode(JSONTodoList)
 	w.Header().Set("Content-Type", "application/json")
 	w.Write(JSONTodoList)
 }
