@@ -4,7 +4,6 @@ import (
 	"database/sql"
 	"encoding/json"
 	"fmt"
-	"io/ioutil"
 	"log"
 	"net/http"
 
@@ -98,16 +97,24 @@ func display(w http.ResponseWriter, r *http.Request) {
 }
 func remove(w http.ResponseWriter, r *http.Request) {
 	form := todo{}
-	b, err := ioutil.ReadAll(r.Body)
-	if err != nil {
+	//元の処理
+	/*
+		b, err := ioutil.ReadAll(r.Body)
+		if err != nil {
+			http.Error(w, err.Error(), 400)
+			return
+		}
+		json.Unmarshal(b, &form)
+		if err != nil {
+			http.Error(w, err.Error(), 400)
+			return
+		}
+	*/
+	if err := json.NewDecoder(r.Body).Decode(&form); err != nil {
 		http.Error(w, err.Error(), 400)
 		return
 	}
-	json.Unmarshal(b, &form)
-	if err != nil {
-		http.Error(w, err.Error(), 400)
-		return
-	}
+
 	targetID := form.ID
 
 	stmt, err := dbConn.Prepare("DELETE FROM trn_todo WHERE id = ?")
