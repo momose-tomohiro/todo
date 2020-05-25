@@ -56,28 +56,6 @@ function getTodoList() {
 
         table.appendChild(tr)
       }
-      /*以前
-      todoList.forEach(function(element) {
-        let row = table.insertRow(-1);
-        let cell = row.insertCell(-1);
-        let text = document.createTextNode(element.schedule);
-        cell.appendChild(text);
-        cell = row.insertCell(-1);
-        text = document.createTextNode(element.priority);
-        cell.appendChild(text);
-        cell = row.insertCell(-1);
-        text = document.createTextNode(element.timeLimit);
-        cell.appendChild(text);
-        cell = row.insertCell(-1);
-        let button = document.createElement('button');
-        button.type = 'button';
-        button.value = element.id;
-        button.innerText = '削除';
-
-        cell.appendChild(button);
-        button.addEventListener('click', removeSchedule, false);
-      });
-      */
     }).catch((err) => {
       console.log(err);
     })

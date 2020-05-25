@@ -42,12 +42,6 @@ func main() {
 		}
 	})
 	log.Println("start http server :8888")
-
-	/*
-		http.HandleFunc("/register", register)
-		http.HandleFunc("/display", display)
-		http.HandleFunc("/remove", remove)
-	*/
 	log.Fatal(http.ListenAndServe(":8888", nil))
 }
 func register(w http.ResponseWriter, r *http.Request) {
@@ -91,19 +85,7 @@ func display(w http.ResponseWriter, r *http.Request) {
 }
 func remove(w http.ResponseWriter, r *http.Request) {
 	id := r.URL.Query().Get("id")
-	//元の処理
-	/*
-		b, err := ioutil.ReadAll(r.Body)
-		if err != nil {
-			http.Error(w, err.Error(), 500)
-			return
-		}
-		json.Unmarshal(b, &body)
-		if err != nil {
-			http.Error(w, err.Error(), 500)
-			return
-		}
-	*/
+
 	if _, err := db.Exec("DELETE FROM trn_todo WHERE id = ?", id); err != nil {
 		http.Error(w, err.Error(), 500)
 		return
