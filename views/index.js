@@ -1,5 +1,12 @@
-window.onload = getTodoList();
+//window.onload = getTodoList();
 const table = document.getElementById(`todo_list`);
+
+let todoList = new Vue({
+  el:'#todo_list',
+  data:{
+    schedule:'test'
+  }
+})
 
 const registerButton = document.getElementById(`register`);
 registerButton.onclick = function() {
