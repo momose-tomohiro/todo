@@ -51,14 +51,14 @@ func main() {
 	log.Fatal(http.ListenAndServe(":8888", nil))
 }
 func register(w http.ResponseWriter, r *http.Request) {
-	var form todo
+	var body todo
 
-	if err := json.NewDecoder(r.Body).Decode(&form); err != nil {
+	if err := json.NewDecoder(r.Body).Decode(&body); err != nil {
 		http.Error(w, err.Error(), 500)
 		return
 	}
 
-	if _, err := db.Exec("INSERT INTO trn_todo (schedule, priority, time_limit) values(?, ?, ?)", form.Schedule, form.Priority, form.TimeLimit); err != nil {
+	if _, err := db.Exec("INSERT INTO trn_todo (schedule, priority, time_limit) values(?, ?, ?)", body.Schedule, body.Priority, body.TimeLimit); err != nil {
 		http.Error(w, err.Error(), 500)
 		return
 	}
@@ -98,7 +98,7 @@ func remove(w http.ResponseWriter, r *http.Request) {
 			http.Error(w, err.Error(), 500)
 			return
 		}
-		json.Unmarshal(b, &form)
+		json.Unmarshal(b, &body)
 		if err != nil {
 			http.Error(w, err.Error(), 500)
 			return
