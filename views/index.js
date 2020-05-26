@@ -22,31 +22,35 @@ const todos = new Vue({
 
 getTodoList();
 
-const registerButton = document.getElementById(`register`);
-registerButton.onclick = function() {
-  const form = {
-    schedule : document.schedule_data.schedule.value,
-    priority : document.schedule_data.priority.value,
-    timeLimit : document.schedule_data.time_limit.value
-  };
-  
-  fetch('/todos', {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-    },
-    body: JSON.stringify(form)
-  }).then(response => {
-    if (response.ok) {
-      alert('登録に成功しました');
-      document.schedule_data.schedule.value = "";
-      document.schedule_data.time_limit.value = "";
-      getTodoList();
+const registerForm = new Vue({
+  el:'#schedule_data',
+  methods:{
+    register:function(){
+      const form = {
+        schedule : this.schedule,
+        priority : this.priority,
+        timeLimit : this.time_limit
+      };
+      
+      fetch('/todos', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(form)
+      }).then(response => {
+        if (response.ok) {
+          alert('登録に成功しました');
+          this.schedule = "";
+          this.time_limit = "";
+          getTodoList();
+        }
+      }).catch((err) => {
+        console.log(err);
+      })
     }
-  }).catch((err) => {
-    console.log(err);
-  })
-};
+  }
+})
 
 function getTodoList() {
   fetch('/todos')

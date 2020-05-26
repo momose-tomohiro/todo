@@ -21,30 +21,30 @@
 
 
             <div class="container">
-                <form action="/register" method="post" id="schedule_data" name = "schedule_data" onsubmit="register();return false;">
-                    <div class="">
-                        <input type="text" class="" name="schedule" placeholder="予定を入力してください">
+                <form id="schedule_data">
+                    <div class="schedule">
+                        <input type="text" name="schedule" v-model="schedule" placeholder="予定を入力してください">
                     </div>
                     <div class="radio">
                         <label>優先度
-                            <input type="radio" name="priority" value="高">高
+                            <input type="radio" name="priority" v-model="priority" value="高">高
                         </label>
                         <label>
-                            <input type="radio" name="priority" value="中">中
+                            <input type="radio" name="priority" v-model="priority" value="中">中
                         </label>
                         <label>
-                            <input type="radio" name="priority" value="低">低
+                            <input type="radio" name="priority" v-model="priority" value="低">低
                         </label>
                     </div>
                     <div class="time-limit">
-                        <input type="text" class="" placeholder="期限を入力してください" name="time_limit">
+                        <input type="text" name="time_limit" v-model="time_limit" placeholder="期限を入力してください" >
+                    </div>
+                    <div>
+                        <button type="button" id="register" v-on:click="register">登録</button>
                     </div>
                 </form>
-                <div>
-                    <button class="btn btn-primary" type="button" id="register">登録</button>
-                </div>
             </div>
-            <script type="text/javascript" src="vue.js"></script>
+            <script type="text/javascript" src="vue.min.js"></script>
             <script type="text/javascript" src="index.js"></script>
         </body>
 </html>
