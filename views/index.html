@@ -6,7 +6,7 @@
     </head>
         <body>
             <h1>todo</h1>
-            <div class="container" >
+            <div id="todoPage">
                 <table id="todo_list">
                    <tr  v-for="todo in todoList" :key="todo.id">
                         <td>{{todo.schedule}}</td>
@@ -17,10 +17,7 @@
                         </td>
                     </tr>
                 </table>
-            </div>
 
-
-            <div class="container">
                 <form id="schedule_data">
                     <div class="schedule">
                         <input type="text" name="schedule" v-model="schedule" placeholder="予定を入力してください">

@@ -1,41 +1,22 @@
 const todos = new Vue({
-  el:'#todo_list',
+  el:'#todoPage',
   data:{
     todoList:""
   },
   methods:{
-    remove:function(event){
-      const id = event.target.value;
-      fetch(`/todos?id=${id}`, {
-        method: 'DELETE'
-      }).then(response => {
-        if (response.ok) {
-          alert('削除しました');
-          this.display()
-        }
-      }).catch((err) => {
-        console.log(err);
-      })
+    display:onload=function(){
+      fetch('/todos')
+        .then(response => {
+          if (response.ok) {
+            return response.json();
+          }
+        })
+        .then(result => {
+          todos.todoList = result
+        }).catch((err) => {
+          console.log(err);
+        })
     },
-    display: onload = function() {
-        fetch('/todos')
-          .then(response => {
-            if (response.ok) {
-              return response.json();
-            }
-          })
-          .then(todoList => {
-            todos.todoList = todoList
-          }).catch((err) => {
-            console.log(err);
-          })
-      }
-  }
-})
-
-const registerForm = new Vue({
-  el:'#schedule_data',
-  methods:{
     register:function(){
       const form = {
         schedule : this.schedule,
@@ -54,7 +35,20 @@ const registerForm = new Vue({
           alert('登録に成功しました');
           this.schedule = "";
           this.time_limit = "";
-          todos.display()
+          this.display()
+        }
+      }).catch((err) => {
+        console.log(err);
+      })
+    },
+    remove:function(event){
+      const id = event.target.value;
+      fetch(`/todos?id=${id}`, {
+        method: 'DELETE'
+      }).then(response => {
+        if (response.ok) {
+          alert('削除しました');
+          this.display()
         }
       }).catch((err) => {
         console.log(err);
@@ -62,4 +56,3 @@ const registerForm = new Vue({
     }
   }
 })
-
