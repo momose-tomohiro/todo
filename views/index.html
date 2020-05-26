@@ -6,10 +6,15 @@
     </head>
         <body>
             <h1>todo</h1>
-            <div class="container">
+            <div class="container" >
                 <table id="todo_list">
-                   <tr>
-                        <td>{{schedule}}</td>
+                   <tr  v-for="todo in todoList" :key="todo.id">
+                        <td>{{todo.schedule}}</td>
+                        <td>{{todo.priority}}</td>
+                        <td>{{todo.timeLimit}}</td>
+                        <td>
+                            <button v-on:click="remove" value="{{todo.id}}">削除</button>
+                        </td>
                     </tr>
                 </table>
             </div>
