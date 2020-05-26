@@ -1,7 +1,7 @@
 const todos = new Vue({
   el:'#todoPage',
   data:{
-    todoList:""
+      todoList: []
   },
   methods:{
     display:onload=function(){
