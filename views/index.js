@@ -10,8 +10,11 @@ const todos = new Vue({
         }
       ]
   },
+  mounted:function(){
+    this.display();
+  },
   methods:{
-    display:onload=function(){
+    display:function(){
       fetch('/todos')
         .then(response => {
           if (response.ok) {
@@ -41,7 +44,7 @@ const todos = new Vue({
         if (response.ok) {
           alert('登録に成功しました');
           this.todoList.schedule = "";
-          this.todoList.time_limit = "";
+          this.todoList.timeimit = "";
           this.display()
         }
       }).catch((err) => {
