@@ -21,21 +21,21 @@
 
                 <form id="schedule_data">
                     <div class="schedule">
-                        <input type="text" name="schedule" v-model="schedule" placeholder="予定を入力してください">
+                        <input type="text" name="schedule" v-model="todoList.schedule" placeholder="予定を入力してください">
                     </div>
                     <div class="radio">
                         <label>優先度
-                            <input type="radio" name="priority" v-model="priority" value="高">高
+                            <input type="radio" name="priority" v-model="todoList.priority" value="高">高
                         </label>
                         <label>
-                            <input type="radio" name="priority" v-model="priority" value="中">中
+                            <input type="radio" name="priority" v-model="todoList.priority" value="中">中
                         </label>
                         <label>
-                            <input type="radio" name="priority" v-model="priority" value="低">低
+                            <input type="radio" name="priority" v-model="todoList.priority" value="低">低
                         </label>
                     </div>
                     <div class="time-limit">
-                        <input type="text" name="time_limit" v-model="time_limit" placeholder="期限を入力してください" >
+                        <input type="text" name="time_limit" v-model="todoList.timeLimit" placeholder="期限を入力してください" >
                     </div>
                     <div>
                         <button type="button" id="register" v-on:click="register">登録</button>
