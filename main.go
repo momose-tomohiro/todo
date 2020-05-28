@@ -12,7 +12,7 @@ import (
 )
 
 type todo struct {
-	ID        int    `json:"id"`
+	ID        string `json:"id"`
 	Schedule  string `json:"schedule"`
 	Priority  string `json:"priority"`
 	TimeLimit string `json:"timeLimit"`
@@ -22,7 +22,7 @@ var db *gorm.DB
 
 func main() {
 	var err error
-	db, err = gorm.Open("mysql", "root:tomoaki7@/todo")
+	db, err = gorm.Open("mysql", "root:0111@/todo")
 	if err != nil {
 		fmt.Println(err.Error())
 		return
@@ -51,17 +51,18 @@ func register(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, err.Error(), 500)
 		return
 	}
-	/*
-		if _, err := db.Exec("INSERT INTO trn_todo (schedule, priority, time_limit) values(?, ?, ?)", body.Schedule, body.Priority, body.TimeLimit); err != nil {
-			http.Error(w, err.Error(), 500)
-			return
-		}
-	*/
+
+	result := db.Create(&body)
+	if result.Error != nil {
+		log.Fatal(result.Error)
+	}
 }
 func display(w http.ResponseWriter, r *http.Request) {
 	var todoList []todo
-	db.Find(&todoList)
-
+	result := db.Find(&todoList)
+	if result.Error != nil {
+		log.Fatal(result.Error)
+	}
 	if err := json.NewEncoder(w).Encode(&todoList); err != nil {
 		http.Error(w, err.Error(), 500)
 		return
@@ -69,11 +70,11 @@ func display(w http.ResponseWriter, r *http.Request) {
 
 }
 func remove(w http.ResponseWriter, r *http.Request) {
-	//id := r.URL.Query().Get("id")
-	/*
-		if _, err := db.Exec("DELETE FROM trn_todo WHERE id = ?", id); err != nil {
-			http.Error(w, err.Error(), 500)
-			return
-		}
-	*/
+	var body todo
+	body.ID = r.URL.Query().Get("id")
+
+	result := db.Delete(&body)
+	if result.Error != nil {
+		log.Fatal(result.Error)
+	}
 }
