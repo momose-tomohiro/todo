@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"log"
 	"net/http"
+	"os"
 	"strconv"
 
 	"github.com/jinzhu/gorm"
@@ -24,7 +25,7 @@ func main() {
 	var err error
 	db, err = gorm.Open("mysql", "root:0111@/todo")
 	if err != nil {
-		fmt.Println(err.Error())
+		fmt.Fprintln(os.Stderr, err)
 		return
 	}
 	defer db.Close()
@@ -48,7 +49,7 @@ func register(w http.ResponseWriter, r *http.Request) {
 	var body todo
 
 	if err := json.NewDecoder(r.Body).Decode(&body); err != nil {
-		http.Error(w, err.Error(), 500)
+		http.Error(w, err.Error(), 400)
 		return
 	}
 
@@ -66,7 +67,7 @@ func display(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	if err := json.NewEncoder(w).Encode(&todoList); err != nil {
-		http.Error(w, err.Error(), 500)
+		http.Error(w, err.Error(), 400)
 		return
 	}
 
@@ -76,7 +77,7 @@ func remove(w http.ResponseWriter, r *http.Request) {
 	var err error
 	body.ID, err = strconv.Atoi(r.URL.Query().Get("id"))
 	if err != nil {
-		http.Error(w, err.Error(), 500)
+		http.Error(w, err.Error(), 400)
 		return
 	}
 
