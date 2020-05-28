@@ -2,6 +2,7 @@ package main
 
 import (
 	"encoding/json"
+	"fmt"
 	"log"
 	"net/http"
 	"strconv"
@@ -15,7 +16,7 @@ type todo struct {
 	ID        int    `json:"id"`
 	Schedule  string `json:"schedule"`
 	Priority  string `json:"priority"`
-	TimeLimit string `json:"timeLimit"`
+	TimeLimit string `json:"time_limit"`
 }
 
 var db *gorm.DB
@@ -24,7 +25,8 @@ func main() {
 	var err error
 	db, err = gorm.Open("mysql", "root:0111@/todo")
 	if err != nil {
-		log.Fatal(err)
+		fmt.Println(err.Error())
+		return
 	}
 	defer db.Close()
 	db.SingularTable(true)
@@ -47,22 +49,26 @@ func register(w http.ResponseWriter, r *http.Request) {
 	var body todo
 
 	if err := json.NewDecoder(r.Body).Decode(&body); err != nil {
-		log.Fatal(err)
+		http.Error(w, err.Error(), 500)
+		return
 	}
 
 	result := db.Create(&body)
 	if result.Error != nil {
-		log.Fatal(result.Error)
+		http.Error(w, result.Error.Error(), 500)
+		return
 	}
 }
 func display(w http.ResponseWriter, r *http.Request) {
 	var todoList []todo
 	result := db.Find(&todoList)
 	if result.Error != nil {
-		log.Fatal(result.Error)
+		http.Error(w, result.Error.Error(), 500)
+		return
 	}
 	if err := json.NewEncoder(w).Encode(&todoList); err != nil {
-		log.Fatal(err)
+		http.Error(w, err.Error(), 500)
+		return
 	}
 
 }
@@ -71,11 +77,12 @@ func remove(w http.ResponseWriter, r *http.Request) {
 	var err error
 	body.ID, err = strconv.Atoi(r.URL.Query().Get("id"))
 	if err != nil {
-		log.Fatal(err)
+		http.Error(w, err.Error(), 500)
+		return
 	}
 
-	result := db.Delete(&body)
-	if result.Error != nil {
-		log.Fatal(result.Error)
+	if err := db.Delete(&body).Error; err != nil {
+		http.Error(w, err.Error(), 500)
+		return
 	}
 }
