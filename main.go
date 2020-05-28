@@ -2,9 +2,9 @@ package main
 
 import (
 	"encoding/json"
-	"fmt"
 	"log"
 	"net/http"
+	"strconv"
 
 	_ "github.com/go-sql-driver/mysql"
 	"github.com/jinzhu/gorm"
@@ -12,7 +12,7 @@ import (
 )
 
 type todo struct {
-	ID        string `json:"id"`
+	ID        int    `json:"id"`
 	Schedule  string `json:"schedule"`
 	Priority  string `json:"priority"`
 	TimeLimit string `json:"timeLimit"`
@@ -24,8 +24,7 @@ func main() {
 	var err error
 	db, err = gorm.Open("mysql", "root:0111@/todo")
 	if err != nil {
-		fmt.Println(err.Error())
-		return
+		log.Fatal(err)
 	}
 	defer db.Close()
 	db.SingularTable(true)
@@ -48,8 +47,7 @@ func register(w http.ResponseWriter, r *http.Request) {
 	var body todo
 
 	if err := json.NewDecoder(r.Body).Decode(&body); err != nil {
-		http.Error(w, err.Error(), 500)
-		return
+		log.Fatal(err)
 	}
 
 	result := db.Create(&body)
@@ -64,14 +62,17 @@ func display(w http.ResponseWriter, r *http.Request) {
 		log.Fatal(result.Error)
 	}
 	if err := json.NewEncoder(w).Encode(&todoList); err != nil {
-		http.Error(w, err.Error(), 500)
-		return
+		log.Fatal(err)
 	}
 
 }
 func remove(w http.ResponseWriter, r *http.Request) {
 	var body todo
-	body.ID = r.URL.Query().Get("id")
+	var err error
+	body.ID, err = strconv.Atoi(r.URL.Query().Get("id"))
+	if err != nil {
+		log.Fatal(err)
+	}
 
 	result := db.Delete(&body)
 	if result.Error != nil {
