@@ -9,6 +9,11 @@
     <h1>todo</h1>
     <div id="todoPage">
       <table id="todo_list">
+        <tr>
+          <td>予定</td>
+          <td>優先度</td>
+          <td>期限</td>
+        </tr>
         <tr v-for="todo in todoList" :key="todo.id">
           <td>{{todo.schedule}}</td>
           <td>{{todo.priority}}</td>
