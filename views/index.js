@@ -1,15 +1,39 @@
 const todos = new Vue({
   el: "#todoPage",
+  vuetify: new Vuetify(),
   data: {
-    todoList: [
-      {
-        id: "",
-        schedule: "",
-        priority: "",
-        time_limit: "",
-      },
-    ],
-  },
+      header:[
+        {
+          text:'予定',
+          align: 'center',
+          value: 'schedule'
+        },
+        {
+          text:'優先度',
+          align: 'center',
+          value:'priority'
+        },
+        {
+          text:'期限',
+          align: 'center',
+          value:'time_limit'
+        },
+        {
+          text:'削除',
+          align: 'center',
+          value:'action',
+          sortable:false
+        }
+      ],
+      todoList: [
+        {
+          id: "",
+          schedule: "",
+          priority: "",
+          time_limit: ""
+        },
+      ]
+    },
   mounted: function () {
     this.display();
   },
@@ -54,9 +78,8 @@ const todos = new Vue({
           console.log(err);
         });
     },
-    remove: function (event) {
-      const id = event.target.value;
-      fetch(`/todos?id=${id}`, {
+    remove: function (item) {
+      fetch(`/todos?id=${item.id}`, {
         method: "DELETE",
       })
         .then((response) => {
