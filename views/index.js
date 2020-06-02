@@ -27,12 +27,17 @@ const todos = new Vue({
       ],
       todoList: [
         {
-          id: "",
-          schedule: "",
-          priority: "",
-          time_limit: ""
+          id: '',
+          schedule: '',
+          priority: '',
+          time_limit: ''
         },
-      ]
+      ],
+      removeConfirmationDialog:false,
+      finishedDialog:false,
+      finishType:'',
+      errorDialog:false,
+      removeID:''
     },
   mounted: function () {
     this.display();
@@ -49,6 +54,7 @@ const todos = new Vue({
           todos.todoList = result;
         })
         .catch((err) => {
+          this.errorDialog = true;
           console.log(err);
         });
     },
@@ -68,27 +74,32 @@ const todos = new Vue({
       })
         .then((response) => {
           if (response.ok) {
-            alert("登録に成功しました");
-            this.todoList.schedule = "";
-            this.todoList.time_limit = "";
+            this.finishType = '登録';
+            this.finishedDialog = true;
+            this.todoList.schedule = '';
+            this.todoList.time_limit = '';
             this.display();
           }
         })
         .catch((err) => {
+          this.errorDialog = true;
           console.log(err);
         });
     },
-    remove: function (item) {
-      fetch(`/todos?id=${item.id}`, {
+    remove: function () {
+      fetch(`/todos?id=${this.removeID}`, {
         method: "DELETE",
       })
         .then((response) => {
           if (response.ok) {
-            alert("削除しました");
+            this.removeConfirmationDialog = false;
+            this.finishType = '削除';
+            this.finishedDialog = true;
             this.display();
           }
         })
         .catch((err) => {
+          this.errorDialog = true;
           console.log(err);
         });
     },
