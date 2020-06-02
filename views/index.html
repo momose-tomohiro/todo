@@ -13,8 +13,7 @@
   <body>
       <v-app  id="todoPage">
         <v-container>
-          <v-row>
-            <v-col cols=1></v-col>
+          <v-row justify="center" align-content="center">
             <v-col cols=10>
               <h1 class="text-center">todo</h1>
               <v-data-table
@@ -23,7 +22,7 @@
                 item-key="id"
               >
                 <template v-slot:item.action="{ item }">
-                  <v-btn small color="error" @click="remove(item)">削除</v-btn>
+                  <v-btn small color="error" @click="removeConfirmationDialog = true, removeID = item.id">削除</v-btn> 
                 </template>
               </v-data-table>
 
@@ -43,6 +42,15 @@
                     <v-radio label="低" value="低"/></v-radio>
                 </v-radio-group>
                 <div class="time-limit">
+                  <v-menu>
+                    <template v-slot:activator="{on}">
+                      <v-btn icon color="primary" v-on="on">
+                        <v-icon>mdi-calendar</v-icon>
+                      </v-btn> 
+                    </template>
+                    <v-date-picker  locale="ja" v-model="todoList.time_limit">
+                  </v-menu>
+                  
                   <v-text-field
                     :counter="255"
                     name="time_limit"
@@ -50,7 +58,7 @@
                     label="期限を入力してください"
                   />
                 </div>
-                <div>
+                <div class="text-center">
                   <v-btn color="primary" id="register" v-on:click="register">
                     登録
                   </v-btn>
@@ -58,6 +66,50 @@
               </form>
             </v-col>
           </v-row>
+          
+          <v-dialog v-model="removeConfirmationDialog" persistent max-width="350">
+            <v-card>
+              <v-row justify="center" align-content="center" no-gutters>
+                <v-card-title>削除確認</v-card-title>
+                <v-card-text class="text-center">本当に削除しますか？</v-card-text>
+                <v-card-actions>
+                  <v-btn @click="removeConfirmationDialog = false">キャンセル</v-btn>
+                  <v-btn　color="error" @click="remove()">削除</v-btn>
+                </v-card-actions>
+              </v-row>
+            </v-card>
+          </v-dialog>
+
+          <v-dialog v-model="finishedDialog" persistent max-width="350">
+            <v-card>
+              <v-row justify="center" align-content="center" no-gutters>
+                <v-card-title></v-card-title>
+                <v-card-text class="text-center">
+                  <v-icon color="green">mdi-checkbox-marked-circle</v-icon>
+                  {{finishType}}しました。
+                </v-card-text>
+                <v-card-actions>
+                  <v-btn @click="finishedDialog = false">閉じる</v-btn>
+                </v-card-actions>
+              </v-row>
+            </v-card>
+          </v-dialog>
+
+          <v-dialog v-model="errorDialog" persistent max-width="350">
+            <v-card>
+              <v-row justify="center" align-content="center" no-gutters>
+                <v-card-title></v-card-title>
+                <v-card-text class="text-center">
+                  <v-icon color="error">mdi-cancel</v-icon>
+                  エラーが発生しました。
+                </v-card-text>
+                <v-card-actions>
+                  <v-btn @click="errorDialog = false">閉じる</v-btn>
+                </v-card-actions>
+              </v-row>
+            </v-card>
+          </v-dialog>
+         
         </v-container>
       </v-app>
     <script type="text/javascript" src="index.js"></script>
