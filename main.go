@@ -33,6 +33,10 @@ func main() {
 
 	http.Handle("/", http.FileServer(http.Dir("views")))
 	http.HandleFunc("/todos", func(w http.ResponseWriter, r *http.Request) {
+
+		w.Header().Set("Access-Control-Allow-Origin", "http://localhost:8080")
+		w.Header().Set("Access-Control-Allow-Methods", "POST,GET,DELETE")
+
 		switch r.Method {
 		case http.MethodGet:
 			display(w, r)
@@ -61,6 +65,7 @@ func register(w http.ResponseWriter, r *http.Request) {
 }
 func display(w http.ResponseWriter, r *http.Request) {
 	var todoList []todo
+
 	result := db.Find(&todoList)
 	if result.Error != nil {
 		http.Error(w, result.Error.Error(), 500)
@@ -70,11 +75,11 @@ func display(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, err.Error(), 400)
 		return
 	}
-
 }
 func remove(w http.ResponseWriter, r *http.Request) {
 	var body todo
 	var err error
+
 	body.ID, err = strconv.Atoi(r.URL.Query().Get("id"))
 	if err != nil {
 		http.Error(w, err.Error(), 400)
