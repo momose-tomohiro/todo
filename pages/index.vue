@@ -4,7 +4,6 @@
       <v-row justify="center" align-content="center">
         <v-col cols="10">
           <h1 class="text-center">todo</h1>
-          <h1>{{test}}</h1>
           <v-data-table :headers="header" :items="todoList" item-key="id">
             <template v-slot:item.action="{ item }">
               <v-btn
@@ -108,20 +107,14 @@
 import axios from 'axios';
 
 export default {
-  
+
   async asyncData({$axios}){
-    return await axios.get('/todos')
-        .then((response) => {
-          if (response.statusText === 'OK') {
-            return{todoList: response.data}
-          }
-        })
-        .catch((err) => {
+    const data = await $axios.$get('/todos')
+    .catch((err) => {
           console.log(err);
-          return false;
         });
+    return{todoList:data}
   },
-  
   data() {
     return {
       header: [
@@ -162,12 +155,6 @@ export default {
       removeID: ""
     };
   },
-
-  /*
-  mounted:function(){
-    this.display();
-  },
-  */
 
   methods:{
     display:function(){
@@ -217,7 +204,6 @@ export default {
           this.errorDialog = true;
           console.log(err);
         });
-      
     }
   }
 };
