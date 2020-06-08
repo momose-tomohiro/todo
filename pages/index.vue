@@ -26,9 +26,9 @@
             </div>
             優先度
             <v-radio-group v-model="todoList.priority">
-                <v-radio label="高" value="高"/></v-radio>
-                <v-radio label="中" value="中"/></v-radio>
-                <v-radio label="低" value="低"/></v-radio>
+                <v-radio label="高" value="高"></v-radio>
+                <v-radio label="中" value="中"></v-radio>
+                <v-radio label="低" value="低"></v-radio>
             </v-radio-group>
             <div class="time-limit">
               <v-menu>
@@ -192,7 +192,7 @@ export default {
     },
     remove:function(){
       this.removeConfirmationDialog = false;
-      axios.delete('/todos?id=' + this.removeID)
+      axios.delete('/todos/' + this.removeID)
       .then((response) => {
           if (response.statusText === 'OK') {
             this.finishType = '削除';

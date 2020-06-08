@@ -1,15 +1,15 @@
 package main
 
 import (
-	"encoding/json"
 	"fmt"
-	"log"
 	"net/http"
 	"os"
 	"strconv"
 
 	"github.com/jinzhu/gorm"
 	_ "github.com/jinzhu/gorm/dialects/mysql"
+	"github.com/labstack/echo"
+	"github.com/labstack/echo/middleware"
 )
 
 type todo struct {
@@ -22,6 +22,10 @@ type todo struct {
 var db *gorm.DB
 
 func main() {
+	e := echo.New()
+
+	e.Use(middleware.CORS())
+
 	var err error
 	db, err = gorm.Open("mysql", "root:tomoaki7@/todo")
 	if err != nil {
@@ -31,63 +35,51 @@ func main() {
 	defer db.Close()
 	db.SingularTable(true)
 
-	http.Handle("/", http.FileServer(http.Dir("views")))
-	http.HandleFunc("/todos", func(w http.ResponseWriter, r *http.Request) {
+	todos := e.Group("/todos")
+	todos.GET("", display)
+	todos.POST("", register)
+	todos.DELETE("/:id", remove)
 
-		w.Header().Set("Access-Control-Allow-Origin", "http://localhost:8080")
-		w.Header().Set("Access-Control-Allow-Methods", "POST,GET,DELETE")
-
-		switch r.Method {
-		case http.MethodGet:
-			display(w, r)
-		case http.MethodPost:
-			register(w, r)
-		case http.MethodDelete:
-			remove(w, r)
-		}
-	})
-	log.Println("start http server :8888")
-	log.Fatal(http.ListenAndServe(":8888", nil))
+	e.Logger.Fatal(e.Start(":8888"))
 }
-func register(w http.ResponseWriter, r *http.Request) {
-	var body todo
-
-	if err := json.NewDecoder(r.Body).Decode(&body); err != nil {
-		http.Error(w, err.Error(), 400)
-		return
-	}
-
-	result := db.Create(&body)
-	if result.Error != nil {
-		http.Error(w, result.Error.Error(), 500)
-		return
-	}
-}
-func display(w http.ResponseWriter, r *http.Request) {
+func display(c echo.Context) error {
 	var todoList []todo
 
 	result := db.Find(&todoList)
 	if result.Error != nil {
-		http.Error(w, result.Error.Error(), 500)
-		return
+		//500番
+		return c.JSON(http.StatusInternalServerError, result.Error.Error())
 	}
-	if err := json.NewEncoder(w).Encode(&todoList); err != nil {
-		http.Error(w, err.Error(), 400)
-		return
-	}
+
+	return c.JSON(http.StatusOK, todoList)
 }
-func remove(w http.ResponseWriter, r *http.Request) {
+
+func register(c echo.Context) error {
+	body := new(todo)
+
+	if err := c.Bind(body); err != nil {
+		//400番
+		return c.JSON(http.StatusBadRequest, err.Error())
+	}
+
+	result := db.Create(&body)
+	if result.Error != nil {
+		return c.JSON(http.StatusInternalServerError, result.Error.Error())
+	}
+
+	return c.JSON(http.StatusOK, "OK")
+}
+
+func remove(c echo.Context) error {
 	var body todo
 	var err error
 
-	body.ID, err = strconv.Atoi(r.URL.Query().Get("id"))
+	body.ID, err = strconv.Atoi(c.Param("id"))
 	if err != nil {
-		http.Error(w, err.Error(), 400)
-		return
+		return c.JSON(http.StatusBadRequest, err.Error())
 	}
-
 	if err := db.Delete(&body).Error; err != nil {
-		http.Error(w, err.Error(), 500)
-		return
+		return c.JSON(http.StatusInternalServerError, err.Error)
 	}
+	return c.JSON(http.StatusOK, "OK")
 }
