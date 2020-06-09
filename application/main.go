@@ -23,6 +23,8 @@ var db *gorm.DB
 
 func main() {
 	e := echo.New()
+	e.Use(middleware.Logger())
+	e.Use(middleware.Recover())
 
 	e.Use(middleware.CORS())
 
@@ -34,6 +36,8 @@ func main() {
 	}
 	defer db.Close()
 	db.SingularTable(true)
+
+	//e.GET("/", handler.display())
 
 	todos := e.Group("/todos")
 	todos.GET("", display)
