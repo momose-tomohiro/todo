@@ -2,9 +2,12 @@ package main
 
 import (
 	"fmt"
+	"log"
 	"net/http"
 	"os"
 	"strconv"
+
+	"todo/application/handler"
 
 	"github.com/jinzhu/gorm"
 	_ "github.com/jinzhu/gorm/dialects/mysql"
@@ -28,6 +31,9 @@ func main() {
 
 	e.Use(middleware.CORS())
 
+	test := handler.Display()
+	log.Println(test)
+
 	var err error
 	db, err = gorm.Open("mysql", "root:tomoaki7@/todo")
 	if err != nil {
@@ -36,8 +42,6 @@ func main() {
 	}
 	defer db.Close()
 	db.SingularTable(true)
-
-	//e.GET("/", handler.display())
 
 	todos := e.Group("/todos")
 	todos.GET("", display)
