@@ -15,10 +15,9 @@ func main() {
 	e.Use(middleware.CORS())
 	handler.DI()
 
-	todos := e.Group("/todos")
-	todos.GET("", handler.GetTodoList)
-	todos.POST("", handler.RegisterTodo)
-	todos.DELETE("/:id", handler.RemoveTodo)
+	e.GET("/todos", handler.GetTodoList)
+	e.POST("/todos", handler.RegisterTodo)
+	e.DELETE("/todos/:id", handler.RemoveTodo)
 
 	e.Logger.Fatal(e.Start(":8888"))
 }
