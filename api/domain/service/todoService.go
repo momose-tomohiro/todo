@@ -1,8 +1,8 @@
 package service
 
 import (
-	"todo/domain/model"
-	"todo/domain/repository"
+	"todo/api/domain/model"
+	"todo/api/domain/repository"
 
 	"github.com/labstack/echo"
 )

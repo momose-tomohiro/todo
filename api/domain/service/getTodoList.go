@@ -1,7 +1,7 @@
 package service
 
 import (
-	"todo/domain/model"
+	"todo/api/domain/model"
 )
 
 func (t *todoServiceStruct) GetTodoService() ([]model.Todo, error) {

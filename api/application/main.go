@@ -1,7 +1,7 @@
 package main
 
 import (
-	"todo/application/handler"
+	"todo/api/application/handler"
 
 	"github.com/labstack/echo"
 	"github.com/labstack/echo/middleware"

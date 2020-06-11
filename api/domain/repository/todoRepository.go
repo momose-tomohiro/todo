@@ -1,7 +1,7 @@
 package repository
 
 import (
-	"todo/domain/model"
+	"todo/api/domain/model"
 
 	"github.com/labstack/echo"
 )

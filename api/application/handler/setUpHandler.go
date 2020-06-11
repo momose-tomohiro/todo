@@ -1,8 +1,8 @@
 package handler
 
 import (
-	"todo/domain/service"
-	"todo/infrastructure"
+	"todo/api/domain/service"
+	"todo/api/infrastructure"
 )
 
 var todoService service.TodoServiceInterface

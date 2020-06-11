@@ -2,8 +2,8 @@ package infrastructure
 
 import (
 	"strconv"
-	"todo/domain/model"
-	"todo/domain/repository"
+	"todo/api/domain/model"
+	"todo/api/domain/repository"
 
 	"github.com/jinzhu/gorm"
 	"github.com/labstack/echo"
