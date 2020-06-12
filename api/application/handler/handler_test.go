@@ -1,9 +1,11 @@
 package handler
 
 import (
+	"errors"
 	"log"
 	"net/http"
 	"net/http/httptest"
+	"strconv"
 	"strings"
 	"testing"
 	"todo/api/domain/model"
@@ -16,6 +18,7 @@ type TestTodoService struct {
 }
 
 func (t *TestTodoService) GetTodoService() ([]model.Todo, error) {
+	t.err = errors.New("test error")
 	if t.err != nil {
 		return nil, t.err
 	}
@@ -34,16 +37,23 @@ func (t *TestTodoService) RegisterTodoService(c echo.Context) error {
 }
 
 func (t *TestTodoService) RemoveTodoService(c echo.Context) error {
+	var body model.Todo
+	var err error
+
+	body.ID, err = strconv.Atoi(c.Param("id"))
+	if err != nil {
+		return err
+	}
 	return t.err
 }
 func TestGetTodoList(t *testing.T) {
 	testTodo := &TestTodoService{}
 	test, err := testTodo.GetTodoService()
 	if err != nil {
-		t.Fatalf("error: %d", err)
+		t.Fatal(err)
 	}
 	log.Println(test)
-	t.Logf(test[0].Priority)
+	t.Logf("OK")
 }
 
 func TestRegisterTodo(t *testing.T) {
@@ -56,18 +66,21 @@ func TestRegisterTodo(t *testing.T) {
 	c := e.NewContext(req, rec)
 	err := testTodo.RegisterTodoService(c)
 	if err != nil {
-		t.Fatalf("error: %d", err)
+		t.Fatal(err)
 	}
 }
 
 func TestRemoveTodo(t *testing.T) {
 	testTodo := &TestTodoService{}
 	e := echo.New()
-	req := httptest.NewRequest(http.MethodDelete, "/todos", nil)
+	req := httptest.NewRequest(http.MethodDelete, "/", nil)
 	rec := httptest.NewRecorder()
 	c := e.NewContext(req, rec)
+	c.SetPath("/todos/:id")
+	c.SetParamNames("id")
+	c.SetParamValues("1")
 	err := testTodo.RemoveTodoService(c)
 	if err != nil {
-		t.Fatalf("error: %d", err)
+		t.Fatal(err)
 	}
 }
