@@ -1,7 +1,6 @@
 package handler
 
 import (
-	"errors"
 	"log"
 	"net/http"
 	"net/http/httptest"
@@ -18,7 +17,7 @@ type TestTodoService struct {
 }
 
 func (t *TestTodoService) GetTodoService() ([]model.Todo, error) {
-	t.err = errors.New("test error")
+	//t.err = errors.New("test error")
 	if t.err != nil {
 		return nil, t.err
 	}
@@ -68,6 +67,7 @@ func TestRegisterTodo(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
+	t.Logf("OK")
 }
 
 func TestRemoveTodo(t *testing.T) {
@@ -83,4 +83,5 @@ func TestRemoveTodo(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
+	t.Logf("OK")
 }
