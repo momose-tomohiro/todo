@@ -122,21 +122,48 @@ func TestRegisterTodo(t *testing.T) {
 	}
 }
 
-/*
-func TestRegisterTodo(t *testing.T) {
-	testTodo := &TodoService{}
-	testJSON := `{"schedule":"test3","priority":"中","time_limit":"2020-6-12"}`
-	e := echo.New()
-	req := httptest.NewRequest(http.MethodPost, "/todos", strings.NewReader(testJSON))
-	req.Header.Set("Content-Type", "application/json")
-	rec := httptest.NewRecorder()
-	c := e.NewContext(req, rec)
-	err := testTodo.RegisterTodoService(c)
-	if err != nil {
-		t.Fatal(err)
+func TestRemoveTodo(t *testing.T){
+	serviceErr := errors.New("test error")
+	tests := []struct {
+		serviceErr error
+		endpoint   string
+		wantStatus int
+		wantBody    string
+	}{
+		{nil, "/todos/:id", 200, `"OK"`},
+		{nil, "/todos/:id", 200, `"OK"`},
+		{serviceErr, "/todos/:id", 500, `{"message":"cannot get id:3 : service layer error"}`},
+		
 	}
-	t.Logf("OK")
+	var h TodoHandler
+	for i, tt := range tests {
+		if tt.serviceErr != nil {
+			h = NewTodoHandler(&todoService{serviceErr})
+		} else {
+			h = NewTodoHandler(&todoService{})
+		}
+		e := echo.New()
+		req := httptest.NewRequest(http.MethodDelete, "/", nil)
+		rec := httptest.NewRecorder()
+		c := e.NewContext(req, rec)
+		c.SetPath("/todos/:id")
+		c.SetParamNames("id")
+		c.SetParamValues(strconv.Itoa(i + 1))
+		if err := h.RemoveTodo(c); err != nil {
+			t.Fatalf("case:[%d] POST %s error:%s", i, tt.endpoint, err)
+		}
+		if rec.Code != tt.wantStatus {
+			t.Fatalf("case:[%d] POST %s unexpected status code, want=%d, got=%d", i, tt.endpoint, tt.wantStatus, rec.Code)
+		}
+		gotBody := strings.Trim(rec.Body.String(), "\n\r")
+		if gotBody != tt.wantBody {
+			t.Fatalf("case:[%d] GET %s unexpected body, want=%s, got=%s", i, tt.endpoint, tt.wantBody, gotBody)
+		}
+		
+	}
 }
+
+/*
 
 func TestRemoveTodo(t *testing.T) {
 	testTodo := &TodoService{}

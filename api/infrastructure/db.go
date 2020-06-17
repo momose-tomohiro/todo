@@ -12,7 +12,7 @@ var DB *gorm.DB
 
 func init() {
 	var err error
-	DB, err = gorm.Open("mysql", "root:tomoaki7@/todo")
+	DB, err = gorm.Open("mysql", "root:0111@/todo")
 	if err != nil {
 		fmt.Fprintln(os.Stderr, err)
 		return
