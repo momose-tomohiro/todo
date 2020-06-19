@@ -122,18 +122,17 @@ func TestRegisterTodo(t *testing.T) {
 	}
 }
 
-func TestRemoveTodo(t *testing.T){
+func TestRemoveTodo(t *testing.T) {
 	serviceErr := errors.New("test error")
 	tests := []struct {
 		serviceErr error
 		endpoint   string
 		wantStatus int
-		wantBody    string
+		wantBody   string
 	}{
 		{nil, "/todos/:id", 200, `"OK"`},
 		{nil, "/todos/:id", 200, `"OK"`},
 		{serviceErr, "/todos/:id", 500, `{"message":"cannot get id:3 : service layer error"}`},
-		
 	}
 	var h TodoHandler
 	for i, tt := range tests {
@@ -159,25 +158,6 @@ func TestRemoveTodo(t *testing.T){
 		if gotBody != tt.wantBody {
 			t.Fatalf("case:[%d] GET %s unexpected body, want=%s, got=%s", i, tt.endpoint, tt.wantBody, gotBody)
 		}
-		
+
 	}
 }
-
-/*
-
-func TestRemoveTodo(t *testing.T) {
-	testTodo := &TodoService{}
-	e := echo.New()
-	req := httptest.NewRequest(http.MethodDelete, "/", nil)
-	rec := httptest.NewRecorder()
-	c := e.NewContext(req, rec)
-	c.SetPath("/todos/:id")
-	c.SetParamNames("id")
-	c.SetParamValues("1")
-	err := testTodo.RemoveTodoService(c)
-	if err != nil {
-		t.Fatal(err)
-	}
-	t.Logf("OK")
-}
-*/

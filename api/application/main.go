@@ -15,7 +15,7 @@ func main() {
 	e.Use(middleware.Recover())
 
 	e.Use(middleware.CORS())
-	todoRepo := infrastructure.NewTodoDB(infrastructure.DB)
+	todoRepo := infrastructure.NewTodoDB(infrastructure.Engine)
 	todoService := service.NewTodoService(todoRepo)
 	handler := handler.NewTodoHandler(todoService)
 

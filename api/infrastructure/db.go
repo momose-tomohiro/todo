@@ -4,18 +4,19 @@ import (
 	"fmt"
 	"os"
 
-	"github.com/jinzhu/gorm"
+	"github.com/go-xorm/xorm"
 	_ "github.com/jinzhu/gorm/dialects/mysql"
+	"xorm.io/core"
 )
 
-var DB *gorm.DB
+var Engine *xorm.Engine
 
 func init() {
 	var err error
-	DB, err = gorm.Open("mysql", "root:0111@/todo")
+	Engine, err = xorm.NewEngine("mysql", "root:tomoaki7@/todo")
 	if err != nil {
 		fmt.Fprintln(os.Stderr, err)
 		return
 	}
-	DB.SingularTable(true)
+	Engine.SetMapper(core.GonicMapper{})
 }

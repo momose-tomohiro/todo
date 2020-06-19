@@ -5,22 +5,22 @@ import (
 	"todo/api/domain/model"
 	"todo/api/domain/repository"
 
-	"github.com/jinzhu/gorm"
+	"github.com/go-xorm/xorm"
 	"github.com/labstack/echo"
 )
 
 type todoInfraStruct struct {
-	db *gorm.DB
+	engine *xorm.Engine
 }
 
-func NewTodoDB(db *gorm.DB) repository.TodoRepository {
-	return &todoInfraStruct{db: db}
+func NewTodoDB(engine *xorm.Engine) repository.TodoRepository {
+	return &todoInfraStruct{engine: engine}
 }
 
 func (t *todoInfraStruct) GetTodoList() ([]model.Todo, error) {
 	var todoList []model.Todo
-	result := t.db.Find(&todoList)
-	return todoList, result.Error
+	err := t.engine.Find(&todoList)
+	return todoList, err
 }
 
 func (t *todoInfraStruct) RegisterTodo(c echo.Context) error {
@@ -29,19 +29,19 @@ func (t *todoInfraStruct) RegisterTodo(c echo.Context) error {
 		return err
 	}
 
-	result := t.db.Create(&body)
-	return result.Error
+	_, err := t.engine.Insert(body)
+	return err
 
 }
 
 func (t *todoInfraStruct) RemoveTodo(c echo.Context) error {
-	var body model.Todo
+	body := new(model.Todo)
 	var err error
 
 	body.ID, err = strconv.Atoi(c.Param("id"))
 	if err != nil {
 		return err
 	}
-	err = t.db.Delete(&body).Error
+	_, err = t.engine.Where("id = ?", body.ID).Delete(body)
 	return err
 }
