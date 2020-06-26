@@ -1,14 +1,16 @@
-version: '3'
+version: "3"
 
 services:
   app:
+    build: ./application
+    tty: true
     image: golang
     ports:
-      - 8080:8080 
+      - 8080:8080
     container_name: todo-test-container
     volumes:
-      - ./:/api
-    
+      - ./:/go/src/api
+
   db:
     image: mariadb
     restart: always
