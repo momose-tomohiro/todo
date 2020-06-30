@@ -107,7 +107,7 @@
 import axios from 'axios';
 
 export default {
-
+  
   async asyncData({$axios}){
     const data = await $axios.$get('/todos')
     .catch((err) => {

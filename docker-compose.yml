@@ -1,0 +1,45 @@
+version: "3"
+
+services:
+  api:
+    build: ./api/application
+    tty: true
+    image: golang
+    ports:
+      - 8880:8880
+    container_name: todo-test-container
+    volumes:
+      - ./:/go/src/todo
+    networks: 
+      - app-net
+
+  db:
+    image: mariadb
+    volumes:
+      #初期データ
+      - ./api/infrastructure/mariadb_init:/docker-entrypoint-initdb.d
+      #永続化のマウント
+      - ./api/infrastructure/mariadb_data:/var/lib/mysql
+    environment:
+      MYSQL_DATABASE: todo
+      MYSQL_USER: root
+      MYSQL_ROOT_PASSWORD: tomoaki7
+      MYSQL_PORT: 3306
+    ports:
+      - 3305:3306
+    networks: 
+      - app-net
+
+  front:
+    build: ./front
+    tty: true
+    volumes:
+      - ./:/go/src/todo
+    ports:
+    - 8088:3000
+    networks: 
+      - app-net
+  
+networks:
+  app-net:
+    external: true

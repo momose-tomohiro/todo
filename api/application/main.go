@@ -23,5 +23,5 @@ func main() {
 	e.POST("/todos", handler.RegisterTodo)
 	e.DELETE("/todos/:id", handler.RemoveTodo)
 
-	e.Logger.Fatal(e.Start(":8888"))
+	e.Logger.Fatal(e.Start(":8880"))
 }

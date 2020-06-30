@@ -52,7 +52,7 @@ export default {
   proxy: true,
 },
 proxy:{
-  '/todos':'http://localhost:8888'
+  '/todos':'http://api:8880'
 },
   vuetify: {
     customVariables: ['~/assets/variables.scss'],
@@ -80,5 +80,8 @@ proxy:{
     */
     extend (config, ctx) {
     }
+  },
+  server: {
+    host: '0.0.0.0'
   }
 }

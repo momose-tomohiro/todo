@@ -1,6 +1,7 @@
 package handler
 
 import (
+	"fmt"
 	"net/http"
 	"todo/api/domain/service"
 
@@ -22,6 +23,7 @@ func NewTodoHandler(todo service.TodoServiceInterface) TodoHandler {
 }
 
 func (t *todoHandler) GetTodoList(c echo.Context) error {
+	fmt.Println("確認")
 	todoList, err := t.todo.GetTodoService()
 	if err != nil {
 		return c.JSON(http.StatusInternalServerError, err)
